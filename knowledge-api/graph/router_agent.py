@@ -9,7 +9,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 class RouteAgentQuery(BaseModel):
     """Enruta la petición del usuario al especialista más apropiado."""
 
-    datasource: Literal["topic1", "topic2", "desconocido"] = Field(
+    datasource: Literal["guia", "reserva", "desconocido"] = Field(
         ...,
         description="Encamina la petición del usuario al gestor más apropiado.",
     )
@@ -34,8 +34,8 @@ class RouterAgent:
         self.question_router = self.route_prompt | self.llm.with_structured_output(RouteAgentQuery)
 
 
-    def run(self, state: HelperGraphState) -> Literal["topic1", "topic2", "desconocido"]:
-        return "topic1"
+    def run(self, state: HelperGraphState) -> Literal["guia", "reserve", "desconocido"]:
+        return state["ticketType"]
 
 
 # Router

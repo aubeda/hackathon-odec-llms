@@ -14,15 +14,16 @@ from dotenv import load_dotenv
 app = FastAPI(title="Knowledge Retrieval API")
 
 # Modelos Pydantic para validación de datos
-class Message(BaseModel):
-    role: Literal['user', 'assistantIA', 'assistantHuman']
-    content: str = Field(default="")
-
 class InboundTicketMessageRequest(BaseModel):
     summary: str
-    type: Literal['SOPREQ']
-    messages: List[Message]
-    eval: int = Field(..., ge=1, le=5)  # Restringimos eval para que esté entre 1 y 5
+    type: Literal["reserva", "guia", "desconocido"]
+    response: str
+
+class InboundTicketMessageResponse(BaseModel):
+    role: Literal["assistantAI", "asistantHuman"]
+    suggestion: bool
+    nextState: Literal["ESCALAR", "RESOLVER"]
+    content: str
 
 class QueryRequest(BaseModel):
     query: str
@@ -72,7 +73,7 @@ load_dotenv()
 retriever = init_helper_agent()
 
 
-@app.post("/inbound_ticket_message")
+@app.post("/inbound_ticket_message", response_model=InboundTicketMessageResponse)
 async def inbound_ticket_message(request: InboundTicketMessageRequest):
     pass
 

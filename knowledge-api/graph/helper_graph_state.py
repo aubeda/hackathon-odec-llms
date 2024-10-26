@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 
 from typing_extensions import TypedDict
 
@@ -13,6 +13,7 @@ class HelperGraphState(TypedDict):
         documents: lista de documentos
     """
 
-    question: str
+    ticketSummary: str
+    ticketType: Literal["reserva", "guia", "desconocido"]
     generation: str
     documents: List[str]

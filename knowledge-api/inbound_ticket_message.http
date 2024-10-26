@@ -1,0 +1,37 @@
+# @host = concerned-brooke-hackathon-gurusup-04938c83.koyeb.app
+@host = localhost
+@port = 8000
+
+POST https://concerned-brooke-hackathon-gurusup-04938c83.koyeb.app/query
+Content-Type: application/json
+
+{
+    "query": "Quiero realizar un recorrido de fotografía, pero no veo nada parecido"
+}
+
+### Pregunta sobre recorrido fotografía
+POST http://{{host}}:{{port}}/inbound_ticket_message
+Content-Type: application/json
+
+{
+    "ticketSummary": "Quiero realizar un recorrido de fotografía, pero no veo nada parecido",
+    "type": "guia"
+}
+
+### Obtener documentos
+POST http://{{host}}:{{port}}/query
+Content-Type: application/json
+
+{
+    "query": "Quiero realizar un recorrido de fotografía, pero no veo nada parecido"
+}
+
+### Guardar pregunta
+POST http://{{host}}:{{port}}/save
+Content-Type: application/json
+
+{
+    "query": "Quiero realizar un recorrido de fotografía, pero no veo nada parecido",
+    "template": "template1",
+    "feedback": 5
+}

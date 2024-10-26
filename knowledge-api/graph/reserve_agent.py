@@ -5,7 +5,7 @@ from langchain.prompts import ChatPromptTemplate
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage
 
-from helper_graph_state import HelperGraphState
+from graph.helper_graph_state import HelperGraphState
 
 
 class ReserveAgent:

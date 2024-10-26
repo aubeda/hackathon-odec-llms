@@ -2,21 +2,20 @@ from os import getenv
 from typing import Literal
 
 from langchain_mistralai import ChatMistralAI, MistralAIEmbeddings
-from answer_generator_agent import AnswerGeneratorAgent
-from retriever_agent import RetrieverAgent
-from router_agent import RouterAgent
-from proposal_agent import ProposalAgent
-from reserve_agent import ReserveAgent
-from unknown_agent import UnknownAgent
-from manual_retriever_agent import ManualRetrieverAgent
+from graph.answer_generator_agent import AnswerGeneratorAgent
+from graph.retriever_agent import RetrieverAgent
+from graph.router_agent import RouterAgent
+from graph.proposal_agent import ProposalAgent
+from graph.reserve_agent import ReserveAgent
+from graph.unknown_agent import UnknownAgent
+from graph.manual_retriever_agent import ManualRetrieverAgent
 
-from langchain_mistralai import ChatMistralAI, MistralAIEmbeddings
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import Distance, VectorParams
 from langgraph.checkpoint.sqlite import SqliteSaver
 import sqlite3
 
-from helper_graph_state import HelperGraphState
+from graph.helper_graph_state import HelperGraphState
 from langgraph.graph import StateGraph, START, END
 from langchain.schema import Document
 
@@ -32,7 +31,7 @@ class HelperGraph:
     ):
 
         # Configurar embeddings
-        self.embeddings = MistralAIEmbeddings(
+        self.embedding_model = MistralAIEmbeddings(
             model="mistral-embed", mistral_api_key=mistral_api_key
         )
 
@@ -74,11 +73,11 @@ class HelperGraph:
         )
 
         # Agente de recuperación de documentos del manual
-        manual_retriever_node = ManualRetrieverAgent(
-            client=self.qdrant_client,
-            embedding_model=self.embedding_model,
-            collection_name=self.collection_name,
-        )
+        # manual_retriever_node = ManualRetrieverAgent(
+        #     client=self.qdrant_client,
+        #     embedding_model=self.embedding_model,
+        #     collection_name=self.collection_name,
+        # )
 
         # Agente generador de respuestas
         answer_generator_node = AnswerGeneratorAgent(llm=self.llm)
@@ -87,7 +86,7 @@ class HelperGraph:
         proposal_node = ProposalAgent(llm=self.llm)
 
         # Agente topic Reservas
-        reserve_node = ReserveAgent(llm=self.llm)
+        # reserve_node = ReserveAgent(llm=self.llm)
 
         # Agente topic Desconocidos
         unknown_node = UnknownAgent(llm=self.llm)
@@ -97,12 +96,11 @@ class HelperGraph:
 
         # Definición de nodos
         graph.add_node("proposal", proposal_node.run)  # Agente topic Propuestas
-        graph.add_node("reserve", reserve_node.run)  # Agente topic Reservas
         graph.add_node("unknown", unknown_node.run)  # Agente topic Desconocidos
         graph.add_node("retrieve", retriever_node.run)  # Recuperador
-        graph.add_node(
-            "manual_retrieve", manual_retriever_node.run
-        )  # Recuperador documentos manual
+        # graph.add_node(
+        #     "manual_retrieve", manual_retriever_node.run
+        # )  # Recuperador documentos manual
         graph.add_node("answer", answer_generator_node.run)  # Generador de respuestas
 
         # Construcción del grafo
@@ -136,46 +134,10 @@ class HelperGraph:
         self, state: HelperGraphState
     ) -> Literal["not_sure", "confident"]:
         documents = state["documents"]
-        umbral = 0.90
-        confident_documents = self._filtrar_por_score(documents, umbral)
-        if len(confident_documents) > 0:
+        if len(documents) > 0:
             return "confident"
         else:
             return "not_sure"
-
-    def _filtrar_por_score(
-        self, documentos: list[Document], umbral: float
-    ) -> list[Document]:
-        """
-        Filtra una lista de documentos retornando solo aquellos que tengan un score superior al umbral especificado.
-
-        Args:
-            documentos: Lista de documentos a filtrar
-            umbral: Valor mínimo de score que deben tener los documentos
-
-        Returns:
-            Lista filtrada de documentos con score superior al umbral
-        """
-        return [doc for doc in documentos if doc.metadata.get("score", 0) > umbral]
-
-    def _ordenar_por_score(
-        documentos: list[Document], descendente: bool = True
-    ) -> list[Document]:
-        """
-        Ordena una lista de documentos según su score.
-
-        Args:
-            documentos: Lista de documentos a ordenar
-            descendente: Si es True ordena de mayor a menor score, si es False de menor a mayor
-
-        Returns:
-            Lista de documentos ordenada por score
-        """
-        return sorted(
-            documentos,
-            key=lambda doc: doc.metadata.get("score", 0),
-            reverse=descendente,
-        )
 
     def _initialize_collection(self):
         """Inicializa la coleccion de Qdrant en caso de que no exista."""
@@ -211,5 +173,5 @@ class HelperGraph:
             return self.graph.get_state(self.config).values[last_state]
         return result
 
-    def invoke(self, initial_state, config):
+    def invoke(self, initial_state, config={}):
         return self.graph.invoke(initial_state, config=config | self.config)

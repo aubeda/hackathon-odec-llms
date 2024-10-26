@@ -2,7 +2,7 @@
 from typing import Literal
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
-from helper_graph_state import HelperGraphState
+from graph.helper_graph_state import HelperGraphState
 from langchain_core.language_models.chat_models import BaseChatModel
 
 # Data model

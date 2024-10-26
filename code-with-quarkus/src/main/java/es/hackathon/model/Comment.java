@@ -1,4 +1,4 @@
-package model;
+package es.hackathon.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

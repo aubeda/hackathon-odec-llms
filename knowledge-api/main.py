@@ -112,12 +112,7 @@ async def inbound_ticket_message(request: InboundTicketMessageRequest):
             {"ticketSummary": request.ticketSummary, "ticketType": request.type}
         )
 
-        response = {
-            "role": result["response"]["role"],
-            "suggestion": result["suggestion"],
-            "nextState": result["nextState"],
-            "content": result["content"],
-        }
+        response = result["response"]
         return JSONResponse(response)
 
     except Exception as e:

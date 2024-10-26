@@ -1,0 +1,282 @@
+[
+    {
+        "ticketSummary": "No veo la opción para seleccionar una habitación con vista al mar.",
+        "metadata": {
+            "template": "Las habitaciones con vista al mar se pueden seleccionar en el menú de 'Opciones de Habitación' si están disponibles. Si no aparecen, es posible que estén agotadas. Contáctenos si necesita confirmación.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Quiero realizar un recorrido de fotografía con un guía, pero no veo perfiles que ofrezcan este enfoque.",
+        "metadata": {
+            "template": "Seleccione 'Fotografía' en los filtros. Si aún no aparece ninguna opción, contáctenos para coordinar con un guía especializado en fotografía.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Recibí una confirmación con fechas distintas a las que elegí en la reserva.",
+        "metadata": {
+            "template": "Verifique las fechas en 'Mis Reservas'. Si necesita cambiarlas, puede hacerlo en 'Editar'. Para ayuda adicional, contáctenos con su número de reserva.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "El sistema bloquea mi cuenta después de intentar varias veces con mi tarjeta de crédito.",
+        "metadata": {
+            "template": "Por motivos de seguridad, su cuenta puede quedar temporalmente bloqueada. Espere unos minutos e intente de nuevo o, si el problema continúa, contáctenos para desbloquear su cuenta.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Quiero hacer una reserva para una conferencia, pero el sistema solo me permite reservar habitaciones individuales.",
+        "metadata": {
+            "template": "Para eventos especiales como conferencias, le sugerimos contactarnos directamente para gestionar la reserva de varias habitaciones o espacios adicionales.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "¿Existen guías que puedan atender a personas sordas? No veo esta especificación en los perfiles.",
+        "metadata": {
+            "template": "Para encontrar guías especializados en accesibilidad, seleccione el filtro de 'Accesibilidad'. Si necesita ayuda adicional, contáctenos y le buscaremos una opción adecuada.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Intento buscar guías para un tour en bicicleta, pero no aparecen opciones específicas para esto.",
+        "metadata": {
+            "template": "En la categoría de 'Deportes y Aventura', debería encontrar opciones de tours en bicicleta. Si no aparecen resultados, indíquenos la ubicación y le ayudaremos a localizar un guía especializado.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Estoy buscando un guía que tenga conocimientos en botánica para una visita especializada, pero no encuentro perfiles con esta especialidad.",
+        "metadata": {
+            "template": "Le recomendamos usar el filtro 'Ciencia y Naturaleza'. Si no aparece ningún resultado, puede contactarnos para ayudarle a encontrar guías con experiencia en botánica.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Intenté reservar una habitación y al confirmar, me asignó otra diferente.",
+        "metadata": {
+            "template": "Esto puede ser un error del sistema. Le recomendamos cancelar la reserva y realizar una nueva para asegurarse de elegir la habitación deseada. Si el problema persiste, contáctenos para confirmar su reserva manualmente.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Quiero hacer una reserva para una fecha especial (el cumpleaños de mi pareja) y añadir un mensaje personalizado. ¿Es posible?",
+        "metadata": {
+            "template": "¡Qué detalle tan agradable! Puede agregar un mensaje personalizado en la sección de 'Solicitudes Especiales' al finalizar su reserva. Si no ve esta opción, contáctenos para añadir el mensaje manualmente.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Quiero hacer una excursión en una zona remota, pero no encuentro guías disponibles.",
+        "metadata": {
+            "template": "Para encontrar guías en zonas remotas, le recomendamos ajustar el radio de búsqueda en los filtros de ubicación. Si no ve opciones, indíquenos la ubicación deseada y le ayudaremos a encontrar un guía disponible.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Estoy buscando un guía que ofrezca actividades en invierno, pero solo veo opciones de verano.",
+        "metadata": {
+            "template": "Use el filtro de 'Temporada de Invierno' en la búsqueda. Si no encuentra opciones, contáctenos y verificaremos la disponibilidad de guías en su temporada preferida.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "He intentado pagar varias veces, pero cada vez me aparece un mensaje que dice 'error desconocido'.",
+        "metadata": {
+            "template": "Sentimos los inconvenientes. Por favor, intente actualizar la página o usar otro navegador. Si el problema persiste, contáctenos para asistencia en el proceso de pago.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "¿Puedo encontrar guías que ofrezcan actividades para mascotas en áreas rurales?",
+        "metadata": {
+            "template": "Para actividades pet-friendly en áreas rurales, seleccione 'Pet-Friendly' y 'Rural' en los filtros. Contáctenos si necesita más detalles sobre guías con experiencia en rutas de mascotas.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Busco un guía que ofrezca una experiencia gastronómica, pero no veo esta opción.",
+        "metadata": {
+            "template": "Puede encontrar experiencias gastronómicas en la categoría 'Cultura y Gastronomía'. Si no encuentra resultados, contáctenos para coordinar una experiencia personalizada.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Reservé una habitación, pero ahora quisiera cambiarla por una suite. ¿Cómo puedo hacer esto?",
+        "metadata": {
+            "template": "Puede modificar su reserva en 'Mis Reservas' seleccionando 'Actualizar'. Si la suite está disponible, se aplicará el cambio. Contáctenos si necesita asistencia adicional.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "¿Puedo encontrar un guía que permita traer mi propio equipo para actividades como escalada?",
+        "metadata": {
+            "template": "Puede consultar las especificaciones en el perfil del guía. En caso de duda, contáctenos para confirmar que el equipo personal esté permitido en la actividad.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Quisiera encontrar guías especializados en mindfulness o bienestar, pero no veo ninguna opción relacionada.",
+        "metadata": {
+            "template": "Gracias por su interés. Le sugerimos buscar en la categoría 'Bienestar y Salud' o 'Recorridos Espirituales'. Si aún no encuentra guías, contáctenos para obtener ayuda personalizada.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Al aplicar el filtro de idiomas, no se muestran guías para mi destino, a pesar de que sé que hay disponibilidad.",
+        "metadata": {
+            "template": "Sentimos las molestias. Le recomendamos ajustar el filtro de idioma y ampliar el radio de búsqueda. Si aún no encuentra resultados, indíquenos su destino e idioma deseado y le asistiremos en la búsqueda.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "El sitio me muestra mensajes en otro idioma aunque mi perfil está en español.",
+        "metadata": {
+            "template": "Intente cerrar sesión y volver a iniciar sesión, y asegúrese de que su configuración de idioma esté en español. Si el problema persiste, intente en otro navegador o dispositivo.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Intento cancelar mi reserva desde la página, pero aparece un error y no me permite proceder.",
+        "metadata": {
+            "template": "Sentimos los inconvenientes. Intente acceder a su reserva desde otro navegador o dispositivo. Si el problema persiste, contáctenos con su número de reserva y gestionaremos la cancelación por usted.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Quiero añadir un paquete especial a mi reserva, pero no veo la opción en la página.",
+        "metadata": {
+            "template": "Algunos paquetes especiales pueden añadirse tras completar la reserva inicial. Puede contactarnos con el detalle del paquete y añadiremos la opción manualmente si está disponible.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Estoy buscando una guía que tenga conocimientos de espeleología, pero no encuentro ningún perfil que indique esta especialidad.",
+        "metadata": {
+            "template": "Le recomendamos utilizar los filtros de 'Deportes de Aventura' y seleccionar la opción más cercana a sus necesidades. Si no encuentra resultados, contáctenos y le ayudaremos a encontrar un guía con conocimientos en espeleología.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Al intentar pagar mi reserva, recibo un mensaje de error indicando que el método de pago no es válido. Ya he intentado con dos tarjetas diferentes.",
+        "metadata": {
+            "template": "Gracias por informarnos del inconveniente. Asegúrese de que su tarjeta esté habilitada para pagos en línea y revise que los datos ingresados sean correctos. Si el problema persiste, intente con otro método de pago o contáctenos para asistencia adicional.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "No aparecen guías para la experiencia que busco. Estoy interesado en una excursión de naturaleza y no encuentro guías que ofrezcan ese tipo de experiencia.",
+        "metadata": {
+            "template": "Le recomendamos ajustar los filtros de búsqueda y seleccionar la categoría 'Naturaleza y Excursiones'. Si no aparecen resultados, puede enviarnos los detalles de la experiencia que busca para que podamos ofrecerle guías especializados en la actividad que necesita.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "El precio final de mi reserva es distinto al precio inicial que se mostró en la página. Hay un incremento y no se explica en ningún lado.",
+        "metadata": {
+            "template": "Pedimos disculpas por la confusión. Algunos cargos adicionales pueden aplicarse en función de la ubicación o temporada. Puede ver los detalles del costo final en la sección de 'Resumen de Reserva'. Si nota algún error, por favor contáctenos y lo resolveremos.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Recibí un mensaje de reserva duplicada después de realizar el pago. ¿Se me cobrará dos veces?",
+        "metadata": {
+            "template": "Sentimos la confusión. Puede verificar en su cuenta bancaria si se realizó un cobro doble. En caso afirmativo, contáctenos para solicitar un reembolso inmediato del monto duplicado.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Me gustaría modificar mi reserva, pero no veo una opción clara para hacerlo en el sitio web.",
+        "metadata": {
+            "template": "Puede modificar su reserva en la sección 'Mis Reservas' de su cuenta. Seleccione la opción 'Editar' junto a la reserva deseada. Si necesita ayuda adicional, no dude en contactarnos.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Dificultad para contactar guías locales. Necesito una guía que conozca bien la cultura local, pero no puedo encontrar ninguno en la plataforma que indique esta experiencia.",
+        "metadata": {
+            "template": "Para encontrar guías locales, seleccione la opción de 'Idioma Local' en los filtros y el tipo de experiencia 'Cultura Local'. Si no aparece ningún guía, por favor indíquenos la ubicación específica y con gusto le ayudaremos a encontrar la opción que necesita.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Estoy buscando un guía con conocimientos de supervivencia para un tour de aventura extrema.",
+        "metadata": {
+            "template": "Para guías especializados en aventura extrema, use el filtro 'Supervivencia y Aventura'. Si no aparecen resultados, contáctenos para verificar disponibilidad.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "No veo ninguna opción para incluir servicios adicionales en mi reserva, como transporte o desayuno.",
+        "metadata": {
+            "template": "Puede agregar servicios adicionales en la sección 'Opciones' al finalizar su reserva. Si no ve la opción deseada, contáctenos para coordinarlo.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "He intentado pagar varias veces, pero cada vez me aparece un mensaje que dice 'error desconocido'.",
+        "metadata": {
+            "template": "Sentimos los inconvenientes. Por favor, intente actualizar la página o usar otro navegador. Si el problema persiste, contáctenos para asistencia en el proceso de pago.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Estoy interesado en un guía que ofrezca una experiencia virtual, pero no veo esta opción.",
+        "metadata": {
+            "template": "En los filtros de búsqueda, seleccione 'Experiencia Virtual' o 'Tour Virtual'. Si no aparece, contáctenos con los detalles de su preferencia y buscaremos opciones.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Quisiera realizar un tour con un guía acompañado de música en vivo. ¿Es posible coordinar algo así?",
+        "metadata": {
+            "template": "Algunos guías ofrecen experiencias personalizadas que incluyen música en vivo. Le recomendamos contactarnos para verificar disponibilidad y opciones para organizar una experiencia musical.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Recibí una confirmación con fechas distintas a las que elegí en la reserva.",
+        "metadata": {
+            "template": "Verifique las fechas en 'Mis Reservas'. Si necesita cambiarlas, puede hacerlo en 'Editar'. Para ayuda adicional, contáctenos con su número de reserva.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Estoy interesado en encontrar guías con conocimientos en astronomía para una actividad nocturna.",
+        "metadata": {
+            "template": "Seleccione el filtro 'Astronomía y Actividades Nocturnas' en su búsqueda. Si no aparece ningún resultado, contáctenos y verificaremos la disponibilidad de un guía especializado en astronomía.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "La página se congela al intentar reservar. Cada vez que intento reservar, la página se congela en la sección de confirmación y no puedo avanzar.",
+        "metadata": {
+            "template": "Lamentamos los inconvenientes. Le recomendamos limpiar la caché de su navegador e intentar nuevamente. Además, asegúrese de estar usando la última versión del navegador. Si el problema continúa, por favor intente realizar la reserva desde otro dispositivo o contáctenos para asistencia adicional.",
+            "topic": "Dificultad en el Proceso de Reserva"
+        }
+    },
+    {
+        "ticketSummary": "Necesito un guía con experiencia en accesibilidad para una persona con movilidad reducida, pero no veo información sobre accesibilidad en los perfiles.",
+        "metadata": {
+            "template": "Para encontrar guías especializados en accesibilidad, active el filtro 'Accesibilidad'. También puede contactarnos con detalles específicos para que podamos buscar la mejor opción para sus necesidades.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "El sistema muestra guías en una ubicación incorrecta. Al buscar guías para una ciudad en particular, el sistema me muestra guías en otras ciudades.",
+        "metadata": {
+            "template": "Le sugerimos revisar que la ubicación esté correctamente seleccionada en los filtros y que el radio de búsqueda sea adecuado para la ciudad que busca. Si el problema persiste, intente reducir el radio de búsqueda. Si sigue sin éxito, por favor contáctenos con los detalles y revisaremos su solicitud.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    },
+    {
+        "ticketSummary": "Estoy buscando un guía que hable varios idiomas. ¿Es posible especificar más de un idioma en los filtros?",
+        "metadata": {
+            "template": "Puede buscar guías que hablen un idioma específico y revisar sus perfiles para ver idiomas adicionales. Si necesita un guía multilingüe, contáctenos y le ayudaremos a encontrar uno.",
+            "topic": "Dificultad para Encontrar Guías"
+        }
+    }
+]

@@ -4,26 +4,28 @@ from pydantic import BaseModel, Field
 from typing import List, Literal, Optional
 from langchain.schema import Document
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from qdrant_client import QdrantClient
 from graph.helper_graph import HelperGraph
+from graph.qdrant_hybrid_retriever import QdrantHybridRetriever
 
 from os import getenv
 from dotenv import load_dotenv
 
 app = FastAPI(title="Knowledge Retrieval API")
 
+
 # Modelos Pydantic para validación de datos
 class InboundTicketMessageRequest(BaseModel):
-    summary: str
+    ticketSummary: str
     type: Literal["reserva", "guia", "desconocido"]
-    response: str
+
 
 class InboundTicketMessageResponse(BaseModel):
     role: Literal["assistantAI", "asistantHuman"]
     suggestion: bool
     nextState: Literal["ESCALAR", "RESOLVER"]
     content: str
+
 
 class QueryRequest(BaseModel):
     query: str
@@ -53,6 +55,32 @@ class DocumentEncoder:
         return {"page_content": doc.page_content, "metadata": doc.metadata}
 
 
+# Inicialización del retriever
+def init_retriever():
+    mistral_api_key = getenv("MISTRAL_API_KEY")
+    COLLECTION_NAME = "hackathon-gurusup"
+    QDRANT_URL = getenv("QDRANT_URL")
+    QDRANT_API_KEY = getenv("QDRANT_API_KEY")
+
+    # Configurar embeddings
+    embedding_model = MistralAIEmbeddings(
+        model="mistral-embed", mistral_api_key=mistral_api_key
+    )
+
+    # Configurar cliente Qdrant
+    qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY)
+    collection_name = COLLECTION_NAME
+
+    custom_retriever = QdrantHybridRetriever(
+        client=qdrant_client,
+        collection_name=collection_name,
+        text_field="page_content",
+        embeddings=embedding_model,
+    )
+
+    return custom_retriever
+
+
 # Inicialización del grafo de comportamiento
 def init_helper_agent():
     mistral_api_key = getenv("MISTRAL_API_KEY")
@@ -64,18 +92,37 @@ def init_helper_agent():
         mistral_api_key=mistral_api_key,
         collection_name=COLLECTION_NAME,
         qdrant_url=QDRANT_URL,
-        qdrant_api_key=QDRANT_API_KEY
+        qdrant_api_key=QDRANT_API_KEY,
     )
+
 
 load_dotenv()
 
 # Crear instancia del retriever
-retriever = init_helper_agent()
+helper_agent = init_helper_agent()
+
+retriever = init_retriever()
 
 
 @app.post("/inbound_ticket_message", response_model=InboundTicketMessageResponse)
 async def inbound_ticket_message(request: InboundTicketMessageRequest):
-    pass
+    try:
+        # Ejecutar la consulta sobre el agente de ayuda
+        result = helper_agent.invoke(
+            {"ticketSummary": request.ticketSummary, "ticketType": request.type}
+        )
+
+        response = {
+            "role": result["response"]["role"],
+            "suggestion": result["suggestion"],
+            "nextState": result["nextState"],
+            "content": result["content"],
+        }
+        return JSONResponse(response)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing query: {str(e)}")
+
 
 @app.post("/query", response_model=QueryResponse)
 async def query_documents(request: QueryRequest):

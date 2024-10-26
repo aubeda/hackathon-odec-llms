@@ -1,11 +1,16 @@
 ### Generador de respuestas
 
-from langchain_core.output_parsers import StrOutputParser
-from langchain.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
+from langchain.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage
 
-from helper_graph_state import HelperGraphState
+from graph.helper_graph_state import HelperGraphState
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
 
 
 class ProposalAgent:
@@ -13,34 +18,59 @@ class ProposalAgent:
         self.llm = llm
 
         # Prompt
-        system = """Eres un experto en análisis estadístico y entiendes a la perfección las tablas en formato markdown.
-        Debes utilizar las tablas de contexto para responder la pregunta al final.
-        Si no sabes la respuesta, simplemente di que no lo sabes, no intentes inventar una respuesta.
-        Debes escoger la información de la tabla que contenga la variable más relevante para responder la pregunta.
-        Ante dos variables igualmente relevantes, escoge la tabla que contenga la variable que aparece primero en la pregunta."""
+        system_template = """Actúa como un asistente especialista en sugerir respuestas a tickets. Tu objetivo principal es, dadas las templates del json proporcionado en la petición del usuario, generar un json con el siguiente contenido, añadiendo en content la sugerencia de respuesta a ticketSummary que es una posible respuesta a la consulta de ticketSummary, inspirándote en las templates o alguna de las templates si crees que pueden ser útiles teniendo en cuenta que no son una solución directa: 
 
-        human = """Utiliza las siguientes tablas en formato HTML como contexto para responder la pregunta al final. Si no sabes la respuesta, simplemente di que no lo sabes, no intentes inventar una respuesta.
-        Las tablas de contexto contienen en filas, las variables del estudio y después de cada variable aparecen sus categorias.
-        Las variables que tienen categorias no contienen datos en la fila de la variable, solamente sus categorias.
-        Una categoría sin variable en la primera de las filas de la tabla indíca el marginal de la tabla, la base, el total.
+{{
+    "role": assistantHuman,
+    "nextState": "escalar",
+    "suggestion":true,
+    "content":"Sugerencia de respuesta al contenido de ticketSummary, inspirándote en las templates o alguna de las templates si crees que pueden ser útiles teniendo en cuenta que no son una solución directa"
+}}
 
-        Debes escoger la información de la tabla que contenga la variable más relevante para responder la pregunta.
-        Ante dos variables igualmente relevantes, escoge la tabla que contenga la variable que aparece primero en la pregunta.
+las claves son:
+- "role": siempre valor assistantHuman
+- "suggestion": siempre con valor true
+- "nextState": siempre con valor "escalar"
+- "content": Sugerencia de respuesta al contenido de ticketSummary, inspirándote en las templates o alguna de las templates si crees que pueden ser útiles teniendo en cuenta que no son una solución directa.
 
-        Contexto: {context}
+Ejemplos delimitados por ---:
+input:
+{{
+    "ticketSummary": "Quiero hacer una reserva de un free tour en Madrid, pero el sistema solo me permite reservar en Valencia.",
+    "templates": [
+        {{template": "Para realizar una reserva debes de acceder al apartado "Reservar free tour" y seleccionar aquella que más te guste."}},
+        {{"template": "Para reservar un free tour en una localidad concreta, se deben usar los filtros del apartado "Filtros"}}
+    ]
+}}
 
-        Pregunta: {question}
+response:
+{{
+    "role": assistantHuman,
+    "nextState": "escalar",
+    "suggestion":true,
+    "content":"Para realizar una resera de un free tour en Madrid tal vez puedes revisar los filtros del apartado "Filtros" o revisar en el apartado "Reservar free tour" si encuentras algún free tour en Madrid. Si con esto no resuelves tu duda, vuelve a contactar con nosotros."
+}}
+---"""
 
-        Respuesta:"""
+        human_template = """{{
+            "ticketSummary": {ticketSummary},
+            "metadata": {{
+                [
+                    {{template: {template}}}
+                ]
+            }}
+        }}"""
+
+        system_message = SystemMessagePromptTemplate.from_template(system_template)
+        human_message = HumanMessagePromptTemplate.from_template(human_template)
 
         self.rag_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", system),
-                ("human", human),
-            ]
+            [system_message, human_message]
         )
 
-        self.rag_chain = self.rag_prompt | self.llm | StrOutputParser()
+        self.rag_chain = (
+            self.rag_prompt | self.llm | StrOutputParser() | JsonOutputParser()
+        )
 
     def run(self, state: HelperGraphState) -> str:
         """
@@ -53,13 +83,37 @@ class ProposalAgent:
             state (dict): New key added to state, generation, that contains LLM generation
         """
         print("---GENERATE---")
-        question = state["question"]
+        ticketSummary = state["ticketSummary"]
+        ticketType = state["ticketType"]
         documents = state["documents"]
+        templates = [doc.metadata["template"] for doc in documents]
+
+        templates_template = """{{
+            "ticketSummary": {ticketSummary},
+            "metadata": {{
+                [
+                    {{template: {templates}}}
+                ]
+            }}
+        }}"""
+
+        prompt_templates = PromptTemplate.from_template(templates_template)
+        input = prompt_templates.format(
+            {
+                "ticketSummary": ticketSummary,
+                "templates": ",\n".join(
+                    """{{ template: {template}""" for template in templates
+                ),
+            }
+        )
+
+        result = input | self.llm | StrOutputParser() | JsonOutputParser()
 
         # RAG generation
-        generation = self.rag_chain.invoke({"context": documents[0].metadata["table_content"], "question": question})
-        result = {"documents": documents, "question": question, "generation": generation, "messages": state["messages"].append(AIMessage(content=generation))}
-        # return {"documents": documents, "question": question, "generation": generation, "messages": state["messages"].append(AIMessage(content=generation))}
+        result = self.rag_chain.invoke(
+            {"ticketSummary": ticketSummary, "templates": templates}
+        )
+
         print(result)
         return result
 

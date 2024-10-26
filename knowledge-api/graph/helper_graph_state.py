@@ -1,7 +1,7 @@
 from typing import List, Literal
 
 from typing_extensions import TypedDict
-
+from langchain.schema import Document
 
 class HelperGraphState(TypedDict):
     """
@@ -16,4 +16,5 @@ class HelperGraphState(TypedDict):
     ticketSummary: str
     ticketType: Literal["reserva", "guia", "desconocido"]
     generation: str
-    documents: List[str]
+    documents: List[Document]
+    response: str

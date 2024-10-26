@@ -34,7 +34,7 @@ public class HelpdeskResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/helpdesk/{key}")
     public Response webhookNewTicket(@PathParam("key") String key, JsonNode body) {
-        logger.log(Level.INFO, body.toPrettyString());
+//        logger.log(Level.DEBUG, body.toPrettyString());
         agentService.newTicketCreated(key, body);
         return Response.ok().build();
     }
@@ -53,17 +53,28 @@ public class HelpdeskResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/helpdesk/{key}/comment")
     public Response webhookAddComment(@PathParam("key") String key, JsonNode body) {
-        logger.log(Level.INFO, body.toPrettyString());
+//        logger.log(Level.DEBUG, body.toPrettyString());
         agentService.newCommentInTicket(key, body);
         return Response.ok().build();
     }
 
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Path("/helpdesk/{key}/transition")
-//    public Response transition(@PathParam("key") String key, State transition) {
-//        agentService.transitionTicket(key, transition);
-//        return Response.ok().build();
-//    }
+    /**
+     * Este método maneja la respuesta a un comentario del cliente en un ticket existente en
+     * el sistema de soporte. Toma una clave como parámetro y delega la
+     * resolución del comentario al agentService.
+     *
+     * @param key el identificador del ticket cuyo comentario se va a resolver
+     * @param body el contenido enviado por el sistema de soporte
+     * @return una Respuesta que indica el resultado de la operación
+     */
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/helpdesk/{key}/diagnostic")
+    public Response webhookDiagnostic(@PathParam("key") String key, JsonNode body) {
+//        logger.log(Level.DEBUG, body.toPrettyString());
+        agentService.diagnosticTicket(key, body);
+        return Response.ok().build();
+    }
+
 }

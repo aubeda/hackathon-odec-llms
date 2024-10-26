@@ -6,7 +6,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 
 @ApplicationScoped
-public class MessagesFactory {
+public class HelpdeskResponseFactory {
 
     /**
      * Creates a comment with the specified message and internal flag.

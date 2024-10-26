@@ -1,23 +1,24 @@
 package es.hackathon.agent;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import es.hackathon.model.State;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jboss.logmanager.Level;
 import org.slf4j.LoggerFactory;
 
 import java.util.logging.Logger;
 
 @Path("/agent")
-public class AgentResource {
+public class HelpdeskResource {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(AgentResource.class);
-    Logger logger = Logger.getLogger(AgentResource.class.getName());
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(HelpdeskResource.class);
+    Logger logger = Logger.getLogger(HelpdeskResource.class.getName());
 
     @Inject
-    AgentService agentService;
+    HelpdeskService agentService;
 
     /**
      * Este método maneja la respuesta a la de un nuevo ticket en el sistema de helpdesk.
@@ -33,7 +34,8 @@ public class AgentResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/helpdesk/{key}")
     public Response webhookNewTicket(@PathParam("key") String key, JsonNode body) {
-        agentService.resolveNewTicket(key, body);
+        logger.log(Level.INFO, body.toPrettyString());
+        agentService.newTicketCreated(key, body);
         return Response.ok().build();
     }
 
@@ -50,17 +52,18 @@ public class AgentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/helpdesk/{key}/comment")
-    public Response webhookUpdateTicket(@PathParam("key") String key, JsonNode body) {
-        try {
-            if(body.get("comment").get("author").get("accountType").asText().equals("atlassian")){
-                logger.info("Ignoring comment from atlassian");
-            }else{
-                logger.info("Processing comment from user by agent");
-                agentService.resolveCommentAgent(key, body);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    public Response webhookAddComment(@PathParam("key") String key, JsonNode body) {
+        logger.log(Level.INFO, body.toPrettyString());
+        agentService.newCommentInTicket(key, body);
         return Response.ok().build();
     }
+
+//    @POST
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    @Path("/helpdesk/{key}/transition")
+//    public Response transition(@PathParam("key") String key, State transition) {
+//        agentService.transitionTicket(key, transition);
+//        return Response.ok().build();
+//    }
 }

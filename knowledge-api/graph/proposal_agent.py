@@ -54,11 +54,9 @@ response:
 
         human_template = """{{
             "ticketSummary": {ticketSummary},
-            "metadata": {{
-                [
-                    {{template: {template}}}
+            "metadata": [
+                    {{template: {templates}}}
                 ]
-            }}
         }}"""
 
         system_message = SystemMessagePromptTemplate.from_template(system_template)
@@ -69,7 +67,7 @@ response:
         )
 
         self.rag_chain = (
-            self.rag_prompt | self.llm | StrOutputParser() | JsonOutputParser()
+            self.rag_prompt | self.llm | JsonOutputParser()
         )
 
     def run(self, state: HelperGraphState) -> str:
@@ -84,30 +82,8 @@ response:
         """
         print("---GENERATE---")
         ticketSummary = state["ticketSummary"]
-        ticketType = state["ticketType"]
         documents = state["documents"]
         templates = [doc.metadata["template"] for doc in documents]
-
-        templates_template = """{{
-            "ticketSummary": {ticketSummary},
-            "metadata": {{
-                [
-                    {{template: {templates}}}
-                ]
-            }}
-        }}"""
-
-        prompt_templates = PromptTemplate.from_template(templates_template)
-        input = prompt_templates.format(
-            {
-                "ticketSummary": ticketSummary,
-                "templates": ",\n".join(
-                    """{{ template: {template}""" for template in templates
-                ),
-            }
-        )
-
-        result = input | self.llm | StrOutputParser() | JsonOutputParser()
 
         # RAG generation
         result = self.rag_chain.invoke(

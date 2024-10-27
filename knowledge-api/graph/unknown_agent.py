@@ -66,7 +66,7 @@ response:
             ]
         )
 
-        self.rag_chain = self.rag_prompt | self.llm | StrOutputParser() | JsonOutputParser()
+        self.rag_chain = self.rag_prompt | self.llm | JsonOutputParser()
 
     def run(self, state: HelperGraphState) -> str:
         """

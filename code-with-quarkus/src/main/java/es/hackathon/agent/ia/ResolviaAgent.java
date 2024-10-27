@@ -1,5 +1,6 @@
 package es.hackathon.agent.ia;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import es.hackathon.model.*;
@@ -16,16 +17,17 @@ public interface ResolviaAgent {
                 "ticketSummary": Contenido de la última intervención del usuario\s
                     (content del último elemento de messages),\s
                 "type": closeTicket | resolvedTicket | reserva | guia | desconocido\s
-                "response": respuesta para cerrar el ticket si type es closeTicket o resolvedTicket, si no que quede vacío.
+                "response": respuesta para cerrar el ticket si type es closeTicket o resolvedTicket, si no que quede vacío.,
+                "phone": Recoge el número de teléfono si este es indicado en alguno de los mensajes del usuario.
             }
-                       
+            
             descripción de los tipos:
             - closeTicket: El ticket no ha sido resuelto pero no debe de seguir la conversación, por ejemplo porque el usuario lo pide o porque el flujo de la conversación incita a ello.
             - resolvedTicket: EL contenido de los mensajes del ticket indica que se ha resuelto.
             - reserva: El ticket habla sobre dificultades en la reserva de un free tour o contenido relacionado sobre reservas.\s
             - guia: El ticket habla sobre dificultares referentes a los guías.
             - desconocido: no se trata de ningún caso anterior y el tema sobre el que habla el ticket no está contemplado.
-                       
+                        
             ejemplos delimitados por ---:
             input:
             {
@@ -34,16 +36,16 @@ public interface ResolviaAgent {
                 "messages": [
                   {"role": "user", "content": "Intento cancelar mi reserva pero no encuentro la opción para hacerlo en el sitio web."},
                   {"role": "assistantHuman", "content": "La opción de cancelar debería estar en la sección 'Mis Reservas'. Intente actualizar la página o contáctenos si necesita ayuda."}
-                ],
-                "eval": null
+                ]
               }
             response:
             {
                 "ticketSummary": "Intento cancelar mi reserva pero no encuentro la opción para hacerlo en el sitio web.",\s
                 "type": "reserva",
-                "response:""
+                "response:"",
+                "phone": ""
             }
-                       
+                        
             input:
             {
                 "summary": "¿Puedo buscar guías que hablen dos idiomas?",
@@ -51,19 +53,19 @@ public interface ResolviaAgent {
                 "messages": [
                   {"role": "user", "content": "¿Dónde puedo encontrar guías que hablen portugués y español? No encuentro filtros de idioma múltiple."},
                   {"role": "assistantIA", "content": "Puede buscar guías que hablen un idioma específico y revisar sus perfiles para ver otros idiomas hablados."}
-                ],
-                "eval": null
+                ]
               }
-                       
+                        
             response:
             {
                 "ticketSummary": "¿Dónde puedo encontrar guías que hablen portugués y español? No encuentro filtros de idioma múltiple.",\s
                 "type": "guia",
-                "response:""
+                "response:"",
+                "phone": ""
             }
-                       
+                        
             input:
-                       
+                        
               {
                 "summary": "¿Puedo buscar guías que hablen dos idiomas?",
                 "type": "SOPREQ",
@@ -71,18 +73,18 @@ public interface ResolviaAgent {
                   {"role": "user", "content": "¿Dónde puedo encontrar guías que hablen portugués y español? No encuentro filtros de idioma múltiple."},
                   {"role": "assistantIA", "content": "Puede buscar guías que hablen un idioma específico y revisar sus perfiles para ver otros idiomas hablados."},
                  {"role": "user", "content": "la verdad que no servís para mucho, no se para qué pregunto"}
-                ],
-                "eval": null
+                ]
               }
-                       
+                        
             response:
             {
                 "ticketSummary": Contenido de la petición del usuario\s
                     (content del primer elemento de messages),\s
                 "type": "closeTicket",
-                "response: "Siento mucho no haber sido de ayuda, cierro el ticket y si necesitas cualquier cosa no dudes en volver a contactarnos."
+                "response: "Siento mucho no haber sido de ayuda, cierro el ticket y si necesitas cualquier cosa no dudes en volver a contactarnos.",
+                "phone": ""
             }
-                       
+                        
             input:
             {
                 "summary": "No se completa el pago de mi reserva",
@@ -94,34 +96,34 @@ public interface ResolviaAgent {
                   {"role": "assistantHuman", "content": "Le sugiero intentar con otro método de pago, como PayPal o una tarjeta diferente. Si el error persiste, contáctenos para procesarlo manualmente."},
             {"role":"user", "content":"Muchas gracias, ya lo tengo"},
             {"role":"assistantIA", "content":"Gracias a ti, cerramos este ticket"}
-                ],
-                "eval": null
+                ]
               }
-                       
+                        
             response:
             {
                 "ticketSummary": Contenido de la petición del usuario\s
                     (content del primer elemento de messages),\s
                 "type": "resolvedTicket",
-                "response:"Gracias a ti, cerramos este ticket."
+                "response:"Gracias a ti, cerramos este ticket.",
+                "phone": ""
             }
-                       
+                        
             input:
             {
                 "summary": "Enviar mensaje",
                 "type": "SOPREQ",
                 "messages": [
                   {"role": "user", "content": "Me gustaría saber el precio de los disntitos free tours de cada país, ¿Es posible?"}
-                ],
-                "eval": null
+                ]
               }
-                       
+                        
             response:
             {
                 "ticketSummary": Contenido de la petición del usuario\s
                     (content del primer elemento de messages),\s
                 "type": "desconocido",
-                "response:""
+                "response:"",
+                "phone": ""
             }
             """)
     @UserMessage(
@@ -129,90 +131,80 @@ public interface ResolviaAgent {
                     {ticketInfoDTO}
             """
     )
-    AgentTriageResponse triage(TicketInfoDTO ticketInfoDTO);
+    AgentTriageResponse triage(String ticketInfoDTO);
 
     @SystemMessage("""
-              Actúa como un asistente especialista en sugerir respuestas a tickets. Tu objetivo principal es, dado el contenido de la clave "ticketSummary" del json dado en la petición del usuario, generar un json con el siguiente contenido, añadiendo en content la sugerencia de respuesta a ticketSummary que le darías al agente humano con comentario introductorio:\s
-                  
-                  {
-                      "role": assistantHuman,
-                       "nextState": "escalar",
-                       "suggestion":true|false,
-                       "content":"Sugerencia de respuesta al contenido de ticketSummary con comentario introductorio"
-                  }
-                  
-                  las claves son:
-                  - "role": siempre valor assistantHuman
-                  - "suggestion": siempre con valor true
-                  - "nextState": siempre con valor "escalar"
-                  - "content": Sugerencia para humano de respuesta al contenido de ticketSummary con comentario introductorio.
-                  
-                  Ejemplos delimitados por ---:
-                  ---
-                  input:
-                  {
-                      "ticketSummary":"Me gustaría saber el precio de los distintos free tours de cada país, ¿Es posible?",\s
-                      "type": "desconocido",
-                      "response:""
-                  }
-                  
-                  response:
-                  {
-                      "role": "assistantHuman",
-                       "nextState": "escalar",
-                       "suggestion":true,
-                       "content":"Aquí tienes una sugerencia sobre una respuesta que puedes utilizar: Muchas gracias por ponerte en contacto con nosotros. Vamos a tratar de resolver tu duda de la mejor forma posible. Para poder saber el precio de los distintos"
-                  }
-                  ---
+            Actúa como un asistente especialista en sugerir respuestas a tickets. Tu objetivo principal es, dado el contenido de "messages" con la última petición del usuario y sus anteriores intervenciones del json dado en la petición del usuario, generar un json con el siguiente contenido, añadiendo en content la sugerencia que le darías al agente humano de respuesta a la última petición de usuario teniendo en cuenta la conversación  con comentario introductorio:\s
+            
+            {
+                "role": assistantHuman,
+                 "nextState": "escalar",
+                 "suggestion":true,
+                 "content":"Sugerencia de respuesta a la última petición de usuario teniendo en cuenta la conversación con comentario introductorio 'Aquí tienes una sugerencia sobre una respuesta que puedes utilizar'"
+            }
+                       
+            las claves son:
+            - "role": siempre valor assistantHuman
+            - "suggestion": siempre con valor true
+            - "nextState": siempre con valor "escalar"
+            - "content": Sugerencia para humano de respuesta a la última petición de usuario teniendo en cuenta la conversación con el comentario introductorio 'Aquí tienes una sugerencia sobre una respuesta que puedes utilizar'.
+                       
+            Ejemplos delimitados por ---:
+            ---
+            input:
+            {
+                "summary": "No encuentro cómo cancelar mi reserva en el sitio web",
+                "type": "SOPREQ",
+                "messages": [
+                  {"role": "user", "content": "Intento cancelar mi reserva pero no encuentro la opción para hacerlo en el sitio web."},
+                  {"role": "assistantHuman", "content": "La opción de cancelar debería estar en la sección 'Mis Reservas'. Intente actualizar la página o contáctenos si necesita ayuda."}
+                ]
+              }
+                       
+            response:
+            {
+                "role": "assistantHuman",
+                 "nextState": "escalar",
+                 "suggestion":true,
+                 "content":"Aquí tienes una sugerencia sobre una respuesta que puedes utilizar: Muchas gracias por ponerte en contacto con nosotros. Vamos a tratar de resolver tu duda de la mejor forma posible. Para poder saber el precio de los distintos"
+            }
+            ---
             """)
     @UserMessage(
             """
                     {ticketInfoDTO}
             """
     )
-    AgentResponse desconocido(TicketInfoDTO ticketInfoDTO);
+    AgentResponse desconocido(String ticketInfoDTO);
 
 
     @SystemMessage("""
-              Actúa como un asistente especialista en sugerir respuestas a tickets. Tu objetivo principal es, dado el contenido de la clave "ticketSummary" del json dado en la petición del usuario, generar un json con el siguiente contenido, añadiendo en content la sugerencia de respuesta a ticketSummary que le darías al agente humano con comentario introductorio:\s
-            
-               {
-                   "role": assistantHuman,
-                    "nextState": "escalar",
-                    "suggestion":true|false,
-                    "content":"Sugerencia de respuesta al contenido de ticketSummary con comentario introductorio"
-               }
-            
-               las claves son:
-               - "role": siempre valor assistantHuman
-               - "suggestion": siempre con valor true
-               - "nextState": siempre con valor "escalar"
-               - "content": Sugerencia para humano de respuesta al contenido de ticketSummary con comentario introductorio.
-            
-               Ejemplos delimitados por ---:
-               ---
-               input:
-               {
-                   "ticketSummary":"Me gustaría saber el precio de los distintos free tours de cada país, ¿Es posible?",\s
-                   "type": "desconocido",
-                   "response:""
-               }
-           
-               response:
-               {
-                   "role": "assistantHuman",
-                    "nextState": "escalar",
-                    "suggestion":true,
-                    "content":"Aquí tienes una sugerencia sobre una respuesta que puedes utilizar: Muchas gracias por ponerte en contacto con nosotros. Vamos a tratar de resolver tu duda de la mejor forma posible. Para poder saber el precio de los distintos"
-               }
-               ---
+              [Rol]
+              Actúa como un agente especialista en generar resúmenes de conversaciones y templates sobre cómo resolver incidencias de tickets.\s
+              [Objetivo]
+              Tu objetivo principal es, dado el contenido en formato json de la petición del usuario con el historial de la conversación en el contenido de la clave "messages", generar un json con el siguiente contenido en el que se genera una template de respuesta a la petición del usuario y hacia el usurio con la forma de resolver la duda y un resumen de la conversación del ticket. Atiende bien a la definición de los componentes de metadata para generalizar a los nuevos tickets:\s
+              {
+                   "ticketSummary": "Texto del contenido de la petición del usuario, es decir, primera petición de user en messages",
+                   "template": "Comunicación al usuario con la forma de resolver la petición del usuario teniendo en cuenta la conversación",
+                   "metadata": {
+                      "summary": "El usuario busca guías especializados en turismo accesible para personas con discapacidad visual y tuvo dificultades para encontrar el filtro de accesibilidad en la página. El agente propone activar el filtro de 'Accesibilidad' y buscar en el apartado de 'Visión'. ",
+                      "evaluation":"La conversación ha sido correcta proponiendo soluciones al cliente y atendiendo a la pregunta concreta que ha realizado. Se podría haber tomado un tono más empático en la primera respuesta al usuario.",\s
+                      "suggestions":"Se podría haber tomado un tono más empático en la primera respuesta al usuario."
+                    }
+              }
+              descripción de las claves:
+              - ticketSummary: Texto del contenido de la petición del usuario, es decir, primera petición de user en messages.
+              - template: Comunicación al usuario con la forma de resolver la petición del usuario teniendo en cuenta la conversación.
+              - summary: Resumen breve pero concreto y detallado de la conversación con el usuario.
+              - evaluation: Evaluación breve pero completa de la conversación obteniendo insights que ayuden a evaluar la calidad de resolución del ticket.
+              - suggestions: Sugerencias de mejora para poder abordar mejor la resolución de tickets similares en un futuro.
             """)
     @UserMessage(
             """
                     {ticketInfoDTO}
             """
     )
-    DiagnosticResponse diagnosticTicket(TicketInfoDTO ticketInfoDTO);
+    DiagnosticResponse diagnosticTicket(String ticketInfoDTO);
 
     @SystemMessage("""
             Actúa como un agente especialista en generar respuestas a tickets. Tu objetivo principal es, dada la template del json dado en la petición del usuario, generar un json con el siguiente contenido, añadiendo en content la respuesta a ticketSummary siguiendo la template que es una posible respuesta a la consulta de ticketSummary con comentario introductorio:\s
@@ -268,7 +260,7 @@ public interface ResolviaAgent {
                     {top9}
             """
     )
-    AgentResponse generateResponseTop9(KnowledgeRequestLLM top9);
+    AgentResponse generateResponseTop9(String top9);
 
     @SystemMessage("""
             Actúa como un asistente especialista en sugerir respuestas a tickets. Tu objetivo principal es, dadas las templates del json proporcionado en la petición del usuario, generar un json con el siguiente contenido, añadiendo en content la sugerencia de respuesta a ticketSummary que es una posible respuesta a la consulta de ticketSummary, inspirándote en las templates o alguna de las templates si crees que pueden ser útiles teniendo en cuenta que no son una solución directa:\s
@@ -312,5 +304,7 @@ public interface ResolviaAgent {
                     {possibles}
             """
     )
-    AgentResponse generateResponsePosibles(List<KnowledgeRequestLLM> possibles);
+    public AgentResponse generateResponsePosibles(String possibles);
+
+
 }
